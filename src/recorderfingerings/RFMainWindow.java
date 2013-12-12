@@ -16,6 +16,7 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
+import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -77,6 +78,8 @@ public class RFMainWindow extends javax.swing.JFrame {
         cbChannel13 = new javax.swing.JCheckBox();
         cbChannel14 = new javax.swing.JCheckBox();
         cbChannel15 = new javax.swing.JCheckBox();
+        spinTranspose = new javax.swing.JSpinner();
+        jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnPlayPause = new javax.swing.JButton();
@@ -336,6 +339,16 @@ public class RFMainWindow extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(jPanel5);
 
+        spinTranspose.setModel(new javax.swing.SpinnerNumberModel(0, -128, 128, 1));
+        spinTranspose.setEnabled(false);
+        spinTranspose.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinTransposeStateChanged(evt);
+            }
+        });
+
+        jLabel2.setText("Transpose:");
+
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -344,8 +357,12 @@ public class RFMainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(labelSelectedTrack)
-                    .add(labelChannels))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 344, Short.MAX_VALUE)
+                    .add(labelChannels)
+                    .add(jPanel4Layout.createSequentialGroup()
+                        .add(jLabel2)
+                        .add(18, 18, 18)
+                        .add(spinTranspose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 57, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 274, Short.MAX_VALUE)
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 169, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -359,7 +376,10 @@ public class RFMainWindow extends javax.swing.JFrame {
                         .add(labelSelectedTrack)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(labelChannels)
-                        .add(0, 145, Short.MAX_VALUE)))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 117, Short.MAX_VALUE)
+                        .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(spinTranspose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel2))))
                 .addContainerGap())
         );
 
@@ -371,7 +391,7 @@ public class RFMainWindow extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 603, Short.MAX_VALUE)
             .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE))
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane2))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -454,11 +474,11 @@ public class RFMainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
+            .add(jSplitPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
+            .add(jSplitPane1)
         );
 
         pack();
@@ -485,6 +505,7 @@ public class RFMainWindow extends javax.swing.JFrame {
                 labelTracks.setText("Tracks: " + trackCount);
                 spinTrack.setModel(new SpinnerNumberModel(0, 0, trackCount - 1, 1));
                 spinTrack.setEnabled(true);
+                spinTranspose.setEnabled(true);
                 channels = new boolean[trackCount][16];
 
                 //System.out.println("Tracks: " + trackCount);
@@ -689,8 +710,13 @@ public class RFMainWindow extends javax.swing.JFrame {
                     int status = message.getStatus();
                     int type = (status & 0xF0) >> 4;
                     int channel = status & 0xF;
-                    if ((type == 0x9) && (!chosenChannels[channel])) {
-                        eventsToDelete.add(event);
+                    if (type == 0x9) {
+                        if (!chosenChannels[channel]) {
+                            eventsToDelete.add(event);
+                        } else if (message instanceof ShortMessage) {
+                            ShortMessage m = (ShortMessage)message;
+                            m.setMessage(m.getCommand(), m.getChannel(), m.getData1() + ((Integer)spinTranspose.getValue()).intValue(), m.getData2());
+                        }
                     }
                 }
                 for (MidiEvent event : eventsToDelete) {
@@ -750,6 +776,10 @@ public class RFMainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnStopActionPerformed
 
+    private void spinTransposeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinTransposeStateChanged
+        hotswapSequence();
+    }//GEN-LAST:event_spinTransposeStateChanged
+
     /**
      * @param args the command line arguments
      */
@@ -804,6 +834,7 @@ public class RFMainWindow extends javax.swing.JFrame {
     private javax.swing.JCheckBox cbChannel8;
     private javax.swing.JCheckBox cbChannel9;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -823,5 +854,6 @@ public class RFMainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel labelSelectedTrack;
     private javax.swing.JLabel labelTracks;
     private javax.swing.JSpinner spinTrack;
+    private javax.swing.JSpinner spinTranspose;
     // End of variables declaration//GEN-END:variables
 }

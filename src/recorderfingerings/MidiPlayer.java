@@ -68,6 +68,7 @@ public class MidiPlayer {
         long pos = sequencer.getTickPosition();
         sequencer.setSequence(sequence);
         sequencer.setTickPosition(pos);
+        listener.currentIndex = MidiUtilities.findEventIndex(sequence.getTracks()[0], pos);
     }
     
     public static MidiDevice getReceivingDevice() throws MidiUnavailableException {
