@@ -4,17 +4,19 @@
  */
 package recorderfingerings;
 
-import java.net.URL;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Locale;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Transmitter;
-import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  *
@@ -25,7 +27,10 @@ public class MidiPlayer {
     
     public boolean useExternalSynth = false;
     public Sequence sequence;
-    public Sequencer sequencer;
+    private Sequencer sequencer;
+    
+    private MidiEventListener listener;
+    private Timer eventTimer;
     
     public static void ensureReceivingDevice() throws MidiUnavailableException {
         if (receivingDevice == null) {
@@ -59,6 +64,7 @@ public class MidiPlayer {
     }
     
     public void hotswapSequence(Sequence sequence) throws InvalidMidiDataException {
+        this.sequence = sequence;
         long pos = sequencer.getTickPosition();
         sequencer.setSequence(sequence);
         sequencer.setTickPosition(pos);
@@ -77,4 +83,75 @@ public class MidiPlayer {
         }
         return null;
     }    
+    
+    public boolean isRunning() {
+        return sequencer.isRunning();
+    }
+    
+    public void start() {
+        if (eventTimer != null) {
+            eventTimer.stop();
+        }
+        eventTimer = new Timer(0, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateMidiEventListener(MidiPlayer.this.listener);
+            }
+        });
+        eventTimer.start();
+        sequencer.start();
+    }
+
+    public void stop() {
+        if (eventTimer != null) {
+            eventTimer.stop();
+        }
+        sequencer.stop();
+    }
+
+    /**
+     * Currently just assumes the first track in the sequence.
+     * @param listener 
+     */
+    public void setMidiEventListener(final MidiEventListener listener) {
+        this.listener = listener;
+        listener.currentIndex = MidiUtilities.findEventIndex(sequence.getTracks()[0], sequencer.getTickPosition());
+    }
+
+    public boolean released = false;
+    
+    private void updateMidiEventListener(MidiEventListener listener) {
+        //TODO Account for pausing.
+        if (released) {
+            eventTimer.stop();
+            return;
+        }
+        long tick = sequencer.getTickPosition();
+        MidiEvent curEvent = sequence.getTracks()[0].get(listener.currentIndex);
+        int count = 0;
+        while (curEvent.getTick() < tick) {
+            curEvent = sequence.getTracks()[0].get(listener.currentIndex);
+            listener.onEvent(curEvent);
+            listener.currentIndex++;
+            count++;
+        }
+        if (count > 1) {
+            System.out.println("Lag " + (count - 1));
+        }
+        eventTimer.setDelay(Math.min((int)((curEvent.getTick() - tick) * millisPerTick()), 50));
+    }
+    
+    public long millisPerTick() {
+        if (sequence.getDivisionType() == Sequence.PPQ) {
+            return (long)(60000 / (sequence.getResolution() * sequencer.getTempoInBPM() * sequencer.getTempoFactor()));
+        } else {
+            System.err.println("Oh heck!  Weird resolution!");
+        }
+        return 10;
+    }
+    
+    public static abstract class MidiEventListener {
+        public int currentIndex;
+        public abstract void onEvent(MidiEvent event);
+    }
 }
