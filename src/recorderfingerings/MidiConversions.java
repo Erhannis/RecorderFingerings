@@ -4,6 +4,7 @@
  */
 package recorderfingerings;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -20,7 +21,94 @@ import javax.imageio.ImageIO;
 public class MidiConversions {
 
     public static final String[] pitches = {"C(-1)", "Db(-1)", "D(-1)", "Eb(-1)", "E(-1)", "F(-1)", "Gb(-1)", "G(-1)", "Ab(-1)", "A(-1)", "Bb(-1)", "B(-1)", "C0", "Db0", "D0", "Eb0", "E0", "F0", "Gb0", "G0", "Ab0", "A0", "Bb0", "B0", "C1", "Db1", "D1", "Eb1", "E1", "F1", "Gb1", "G1", "Ab1", "A1", "Bb1", "B1", "C2", "Db2", "D2", "Eb2", "E2", "F2", "Gb2", "G2", "Ab2", "A2", "Bb2", "B2", "C3", "Db3", "D3", "Eb3", "E3", "F3", "Gb3", "G3", "Ab3", "A3", "Bb3", "B3", "C4", "Db4", "D4", "Eb4", "E4", "F4", "Gb4", "G4", "Ab4", "A4", "Bb4", "B4", "C5", "Db5", "D5", "Eb5", "E5", "F5", "Gb5", "G5", "Ab5", "A5", "Bb5", "B5", "C6", "Db6", "D6", "Eb6", "E6", "F6", "Gb6", "G6", "Ab6", "A6", "Bb6", "B6", "C7", "Db7", "D7", "Eb7", "E7", "F7", "Gb7", "G7", "Ab7", "A7", "Bb7", "B7", "C8", "Db8", "D8", "Eb8", "E8", "F8", "Gb8", "G8", "Ab8", "A8", "Bb8", "B8", "C9", "Db9", "D9", "Eb9", "E9", "F9", "Gb9", "G9"};
+    public static final String[] recorderPitches = {"11Cn","11Cs","12Dn","12Ds","13En","14Fn","14Fs","15Gn","15Gs","16An","17Bb","17Bn","21Cn","21Cs","22Dn","22Ds","23En","24Fn","24Fs","25Gn","25Gs","26An","27Bb","27Bn","31Cn","31Cs","32Dn","32Ds","33En","34Fn","34Fs","35Gn","35Gs","36An","99xx"};
+    
+    public static Image[] firstImages = new Image[recorderPitches.length];
+    
+    public static final String BASE_PITCH = "C5";
+    public static int basePitchInt = 0;
+    
+    public void init() {
+        for (int i = 0; i < pitches.length; i++) {
+            if (BASE_PITCH.equals(pitches[i])) {
+                basePitchInt = i;
+                break;
+            }
+        }
+        for (int i = 0; i < firstImages.length; i++) {
+            Image image = firstImage(recorderPitches[i]);
+            firstImages[i] = image;
+        }
+    }
+    
+    public Image getImage(int note) {
+        int newIndex = note - basePitchInt;
+        if (newIndex < 0 || newIndex >= recorderPitches.length) {
+            newIndex = recorderPitches.length - 1;
+        }
+        return firstImages[newIndex];
+    }
+    
+    public int sidebarWidth = 39;
+    
+    private Image doTest() {
+        int basePitch = 0;
+        for (int i = 0; i < pitches.length; i++) {
+            if (BASE_PITCH.equals(pitches[i])) {
+                basePitch = i;
+                break;
+            }
+        }
+        
+        Image[] docImgs = new Image[nBildTeile * nBilder];
+        this.FuGriff("15Gs", "1st Octave", "C", "", "", docImgs);
+        Image[] first = new Image[nBildTeile];
+        
+        for (int i = 0; i < nBildTeile; i++) {
+            first[i] = docImgs[i];
+        }
 
+        int mid = first[0].getWidth(null);
+        int width = mid + first[1].getWidth(null);
+        int height = first[0].getHeight(null);
+        
+        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        Graphics2D g = bi.createGraphics();
+        g.drawImage(first[0], 0, 0, null);
+        int y = 0;
+        for (int i = 1; i < nBildTeile; i++) {
+            g.drawImage(first[i], mid, y, null);
+            y += first[i].getHeight(null);
+        }
+        
+        return bi;
+    }
+    
+    private Image firstImage(String note) {
+        Image[] docImgs = new Image[nBildTeile * nBilder];
+        this.FuGriff(note, "1st Octave", "C", "", "", docImgs);
+        Image[] first = new Image[nBildTeile];
+        
+        for (int i = 0; i < nBildTeile; i++) {
+            first[i] = docImgs[i];
+        }
+
+        int mid = first[0].getWidth(null);
+        int width = mid + first[1].getWidth(null);
+        int height = first[0].getHeight(null);
+        
+        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        Graphics2D g = bi.createGraphics();
+        g.drawImage(first[0], 0, 0, null);
+        int y = 0;
+        for (int i = 1; i < nBildTeile; i++) {
+            g.drawImage(first[i], mid, y, null);
+            y += first[i].getHeight(null);
+        }
+        
+        return bi;
+    }
+    
     public static class Fingering {
 
         public String note;
@@ -78,7 +166,7 @@ public class MidiConversions {
         Text = " Please report the error number and fingering you displayed to the Webmaster (see CONTACT). Thank you very much for helping me to correct this bug (Winfried Bauer).  ---- More information for the WEBMASTER: " + Text;
         System.err.println("Error " + number + " = " + Text);
     }
-    public int nBildVor = -1;
+    public int nBildVor = 0;
     public int nBildTeile = 9;
     public int posImg0 = 8;
     public int enFT;
@@ -90,9 +178,9 @@ public class MidiConversions {
             //if (nBildVor<0) nBildVor=document.images.length; // nBildVor has been pre-set for browser incompat. (see in Inc-Menu.php)
             String imgFile = "";
             if (UpsideDown) {
-                imgFile = "../aImg/Barock/UpsideDown/";
+                imgFile = "misc/imgs/UpsideDown/";
             } else {
-                imgFile = "../aImg/Barock/";
+                imgFile = "misc/imgs/";
             }
             String[] imgs = new String[]{"leer.gif", "F00.gif", "F01.gif", "F02.gif", "F06.gif", "F07.gif", "F10.gif", "F11.gif", "F12.gif", "F16.gif", "F20.gif", "F21.gif", "F22.gif", "F26.gif", "F27.gif", "F30.gif", "F31.gif", "F32.gif", "F33.gif", "F34.gif", "F36.gif", "F40.gif", "F41.gif", "F42.gif", "F46.gif", "F47.gif", "F50.gif", "F51.gif", "F52.gif", "F53.gif", "F54.gif", "F56.gif", "F60.gif", "F61.gif", "F62.gif", "F63.gif", "F64.gif", "F66.gif", "F67.gif", "F70.gif", "F71.gif", "F72.gif", "F73.gif", "F74.gif", "F76.gif", "F77.gif", "F80.gif", "F81.gif", "F8b.gif"};
             int n = 0;
@@ -315,6 +403,11 @@ public class MidiConversions {
     public int nBlinkTab = 60;
     public int xBlinkTab = 0;
     public ArrayList<Integer> BlinkTab = new ArrayList<Integer>();
+    {
+        for (int i = 0; i < nBlinkTab; i++) {
+            BlinkTab.add(0);
+        }
+    }
 
     public void stoppBlink() {
 //        for (int pBlinkTab=0; pBlinkTab<nBlinkTab; pBlinkTab++) {
@@ -379,7 +472,9 @@ public class MidiConversions {
 //}}
     } // eof WriteBem
 
-    public boolean FuGriff(String ToneID, String Octave, String Tone, String ToneType, String ToneX) {
+    public static int count = 0;
+    
+    public boolean FuGriff(String ToneID, String Octave, String Tone, String ToneType, String ToneX, Image[] docImgs) {
         //ToneID holds internal tone name, eg: 15Gn or 21Cs or  11Cn*12Dn (trill) and text in local lang
         //alert ("FuGriff:"+ToneID);
         //alert("FuGriff-Aufruf:"+document.images.length);
@@ -448,11 +543,16 @@ public class MidiConversions {
                     System.err.println("Coding error - please report to Webmaster (ERROR: Image not available or not in Imap in aBar.1S.3a = Barock/Bar fing " + Griffe[pGriffe].note + " for this part of the recorder: F " + aLoch + " " + nLoDef);
                     continue;
                 }
-	    document.images[pImage].src=FT.get(pFT).src;   					// ok, no error, replace the image
+                System.out.println("count " + count);count++;
+                docImgs[pImage] = FT.get(pFT);   					// ok, no error, replace the image
                 if (nLoDef > 5) // trill fingerings (hole def 6,7,8)
                 {
                     sBlinken = true;								// set BLINK on
+                    try {
                     BlinkTab.set(pBlinkTab, pImage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     pBlinkTab++; 				//image position for BLINK function in Blink tab
                     BlinkTab.set(pBlinkTab, pFT);
                     pBlinkTab++;     				//current img
@@ -477,6 +577,8 @@ public class MidiConversions {
 
 
 // ============== following coding clears the remaining recorder pictures (not used ones), but show at least one empty, if no fingering at all ====
+        
+/**/
         for (int n = aBild; n < vorherigeBilder; n++) {			// loop through all recorder images
             WriteBem(n, "");
             WriteInfo(n, "");				// clear info boxes
@@ -484,7 +586,7 @@ public class MidiConversions {
             for (int x = 0; x < nBildTeile; x++) // nBildTeile = number of parts per recorder
             {
                 if (n > 0) {
-            document.images[pImage+x].src=FT.get(0).src;
+            docImgs[pImage+x] = FT.get(0);
                 } // not last picture = clear part-image 
                 else {
                     int nHole = x;								// last picture = empty recorder - set hole number		
@@ -501,21 +603,23 @@ public class MidiConversions {
                         pFT = enFT;				// Hole 8 (bell) = dont show open hole but an empty image (enFT points to F8b.gif)
                     }		//if (pFT==0) pFT=enFT;				// no pointer, corr. to last image (this is F8b.gif = blank image for hole 8)
                     //alert ("x="+x+" nHole="+nHole);
-		document.images[pImage+x].src=FT.get(pFT).src;	// replace the image
+		docImgs[pImage+x] = FT.get(pFT);	// replace the image
                 }
             }
         }
+/**/
+        
 // ------------------------------ nopped the Ton-Box (leave it, we might need it later again)
 // if (UnderConstr==1) {ToneTextDisplay=ToneTextDisplay+" &nbsp; ("+xGriffID+")";}
 // e=document.getElementById("TonBox");e.innerHTML=ToneTextDisplay;    
 
         // === Show  messages ====
-e=document.getElementById("FingeringMsg");e.style.visibility="hidden";
-        if (sGriffDa == false) {
-            String Text = "Fingering not available";
-
-		e.innerHTML="<br>"+Text+"<br>&nbsp;"; e.style.visibility="visible";
-        }
+//        e=document.getElementById("FingeringMsg");e.style.visibility="hidden";
+//        if (sGriffDa == false) {
+//            String Text = "Fingering not available";
+//
+//		e.innerHTML="<br>"+Text+"<br>&nbsp;"; e.style.visibility="visible";
+//        }
         vorherigeBilder = aBild;
         if (sBlinken) {
             startBlink();

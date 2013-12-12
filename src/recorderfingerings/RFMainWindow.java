@@ -4,6 +4,7 @@
  */
 package recorderfingerings;
 
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import javax.sound.midi.Track;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.SpinnerNumberModel;
+import mathnstuff.ImagePanel;
 
 /**
  *
@@ -28,6 +30,9 @@ import javax.swing.SpinnerNumberModel;
  */
 public class RFMainWindow extends javax.swing.JFrame {
 
+    public MidiConversions midiConversions;
+    public ImagePanel imagePanel;
+    
     /**
      * Creates new form RFMainWindow
      */
@@ -38,6 +43,11 @@ public class RFMainWindow extends javax.swing.JFrame {
         } catch (MidiUnavailableException ex) {
             Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if (jPanel6 instanceof ImagePanel) {
+            this.imagePanel = ((ImagePanel)jPanel6);
+        }
+        this.midiConversions = new MidiConversions();
+        this.midiConversions.init();
     }
 
     /**
@@ -80,11 +90,13 @@ public class RFMainWindow extends javax.swing.JFrame {
         cbChannel15 = new javax.swing.JCheckBox();
         spinTranspose = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnPlayPause = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
         labelCurrentNote = new javax.swing.JLabel();
+        jPanel6 = new ImagePanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -349,6 +361,13 @@ public class RFMainWindow extends javax.swing.JFrame {
 
         jLabel2.setText("Transpose:");
 
+        jButton1.setText("TEST");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -361,8 +380,10 @@ public class RFMainWindow extends javax.swing.JFrame {
                     .add(jPanel4Layout.createSequentialGroup()
                         .add(jLabel2)
                         .add(18, 18, 18)
-                        .add(spinTranspose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 57, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 274, Short.MAX_VALUE)
+                        .add(spinTranspose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 57, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 193, Short.MAX_VALUE)
+                        .add(jButton1)))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 169, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -376,10 +397,11 @@ public class RFMainWindow extends javax.swing.JFrame {
                         .add(labelSelectedTrack)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(labelChannels)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 117, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 115, Short.MAX_VALUE)
                         .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(spinTranspose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jLabel2))))
+                            .add(jLabel2)
+                            .add(jButton1))))
                 .addContainerGap())
         );
 
@@ -430,6 +452,27 @@ public class RFMainWindow extends javax.swing.JFrame {
 
         labelCurrentNote.setText("-");
 
+        jPanel6.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                jPanel6AncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
+
+        org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 164, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 0, Short.MAX_VALUE)
+        );
+
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -439,16 +482,22 @@ public class RFMainWindow extends javax.swing.JFrame {
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(labelCurrentNote))
-                .addContainerGap(497, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 327, Short.MAX_VALUE)
+                .add(jPanel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(labelCurrentNote)
-                .addContainerGap(189, Short.MAX_VALUE))
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(labelCurrentNote)
+                        .add(0, 183, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -737,7 +786,9 @@ public class RFMainWindow extends javax.swing.JFrame {
             @Override
             public void onEvent(MidiEvent event) {
                 if ((event.getMessage().getStatus() & 0xF0) == 0x90) {
-                    labelCurrentNote.setText(MidiConversions.pitches[(int)(event.getMessage().getMessage()[1] & 0xFF)]);
+                    int pitch = (int)(event.getMessage().getMessage()[1] & 0xFF);
+                    labelCurrentNote.setText(MidiConversions.pitches[pitch]);
+                    imagePanel.setImage(midiConversions.getImage(pitch));
                 }
             }
         };
@@ -779,6 +830,13 @@ public class RFMainWindow extends javax.swing.JFrame {
     private void spinTransposeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinTransposeStateChanged
         hotswapSequence();
     }//GEN-LAST:event_spinTransposeStateChanged
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jPanel6AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jPanel6AncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel6AncestorAdded
 
     /**
      * @param args the command line arguments
@@ -833,6 +891,7 @@ public class RFMainWindow extends javax.swing.JFrame {
     private javax.swing.JCheckBox cbChannel7;
     private javax.swing.JCheckBox cbChannel8;
     private javax.swing.JCheckBox cbChannel9;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
@@ -844,6 +903,7 @@ public class RFMainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
