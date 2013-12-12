@@ -15,9 +15,9 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Track;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.SpinnerNumberModel;
-import mathnstuff.MeUtils;
 
 /**
  *
@@ -52,6 +52,24 @@ public class RFMainWindow extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         labelSelectedTrack = new javax.swing.JLabel();
         labelChannels = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jPanel5 = new javax.swing.JPanel();
+        cbChannel0 = new javax.swing.JCheckBox();
+        cbChannel1 = new javax.swing.JCheckBox();
+        cbChannel2 = new javax.swing.JCheckBox();
+        cbChannel3 = new javax.swing.JCheckBox();
+        cbChannel4 = new javax.swing.JCheckBox();
+        cbChannel5 = new javax.swing.JCheckBox();
+        cbChannel6 = new javax.swing.JCheckBox();
+        cbChannel7 = new javax.swing.JCheckBox();
+        cbChannel8 = new javax.swing.JCheckBox();
+        cbChannel9 = new javax.swing.JCheckBox();
+        cbChannel10 = new javax.swing.JCheckBox();
+        cbChannel11 = new javax.swing.JCheckBox();
+        cbChannel12 = new javax.swing.JCheckBox();
+        cbChannel13 = new javax.swing.JCheckBox();
+        cbChannel14 = new javax.swing.JCheckBox();
+        cbChannel15 = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -60,7 +78,7 @@ public class RFMainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jSplitPane1.setDividerLocation(200);
+        jSplitPane1.setDividerLocation(300);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
         jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
@@ -114,6 +132,199 @@ public class RFMainWindow extends javax.swing.JFrame {
 
         labelChannels.setText("Channels: -");
 
+        cbChannel0.setText("Channel 0");
+        cbChannel0.setEnabled(false);
+        cbChannel0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel0ActionPerformed(evt);
+            }
+        });
+
+        cbChannel1.setText("Channel 1");
+        cbChannel1.setEnabled(false);
+        cbChannel1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel1ActionPerformed(evt);
+            }
+        });
+
+        cbChannel2.setText("Channel 2");
+        cbChannel2.setEnabled(false);
+        cbChannel2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel2ActionPerformed(evt);
+            }
+        });
+
+        cbChannel3.setText("Channel 3");
+        cbChannel3.setEnabled(false);
+        cbChannel3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel3ActionPerformed(evt);
+            }
+        });
+
+        cbChannel4.setText("Channel 4");
+        cbChannel4.setEnabled(false);
+        cbChannel4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel4ActionPerformed(evt);
+            }
+        });
+
+        cbChannel5.setText("Channel 5");
+        cbChannel5.setEnabled(false);
+        cbChannel5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel5ActionPerformed(evt);
+            }
+        });
+
+        cbChannel6.setText("Channel 6");
+        cbChannel6.setEnabled(false);
+        cbChannel6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel6ActionPerformed(evt);
+            }
+        });
+
+        cbChannel7.setText("Channel 7");
+        cbChannel7.setEnabled(false);
+        cbChannel7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel7ActionPerformed(evt);
+            }
+        });
+
+        cbChannel8.setText("Channel 8");
+        cbChannel8.setEnabled(false);
+        cbChannel8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel8ActionPerformed(evt);
+            }
+        });
+
+        cbChannel9.setText("Channel 9");
+        cbChannel9.setEnabled(false);
+        cbChannel9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel9ActionPerformed(evt);
+            }
+        });
+
+        cbChannel10.setText("Channel 10");
+        cbChannel10.setEnabled(false);
+        cbChannel10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel10ActionPerformed(evt);
+            }
+        });
+
+        cbChannel11.setText("Channel 11");
+        cbChannel11.setEnabled(false);
+        cbChannel11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel11ActionPerformed(evt);
+            }
+        });
+
+        cbChannel12.setText("Channel 12");
+        cbChannel12.setEnabled(false);
+        cbChannel12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel12ActionPerformed(evt);
+            }
+        });
+
+        cbChannel13.setText("Channel 13");
+        cbChannel13.setEnabled(false);
+        cbChannel13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel13ActionPerformed(evt);
+            }
+        });
+
+        cbChannel14.setText("Channel 14");
+        cbChannel14.setEnabled(false);
+        cbChannel14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel14ActionPerformed(evt);
+            }
+        });
+
+        cbChannel15.setText("Channel 15");
+        cbChannel15.setEnabled(false);
+        cbChannel15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbChannel15ActionPerformed(evt);
+            }
+        });
+
+        org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(cbChannel0)
+                    .add(cbChannel1)
+                    .add(cbChannel2)
+                    .add(cbChannel3)
+                    .add(cbChannel4)
+                    .add(cbChannel5)
+                    .add(cbChannel6)
+                    .add(cbChannel7)
+                    .add(cbChannel8)
+                    .add(cbChannel9)
+                    .add(cbChannel10)
+                    .add(cbChannel11)
+                    .add(cbChannel12)
+                    .add(cbChannel13)
+                    .add(cbChannel14)
+                    .add(cbChannel15))
+                .addContainerGap(41, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(cbChannel0)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel2)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel3)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel4)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel5)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel6)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel7)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel8)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel9)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel10)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel11)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel12)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel13)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel14)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbChannel15)
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
+
+        jScrollPane2.setViewportView(jPanel5);
+
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -123,16 +334,22 @@ public class RFMainWindow extends javax.swing.JFrame {
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(labelSelectedTrack)
                     .add(labelChannels))
-                .addContainerGap(479, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 304, Short.MAX_VALUE)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 169, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(labelSelectedTrack)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(labelChannels)
-                .addContainerGap(51, Short.MAX_VALUE))
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .add(jPanel4Layout.createSequentialGroup()
+                        .add(labelSelectedTrack)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(labelChannels)
+                        .add(0, 145, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jSplitPane2.setRightComponent(jPanel4);
@@ -143,11 +360,11 @@ public class RFMainWindow extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 563, Short.MAX_VALUE)
             .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE))
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane2))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 198, Short.MAX_VALUE)
+            .add(0, 298, Short.MAX_VALUE)
             .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
                     .add(jSplitPane2)
@@ -164,7 +381,7 @@ public class RFMainWindow extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 195, Short.MAX_VALUE)
+            .add(0, 95, Short.MAX_VALUE)
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -190,15 +407,11 @@ public class RFMainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 567, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, Short.MAX_VALUE))
+            .add(jSplitPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 406, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, Short.MAX_VALUE))
+            .add(jSplitPane1)
         );
 
         pack();
@@ -263,13 +476,60 @@ public class RFMainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    public JCheckBox getChannelCheckbox(int i) {
+        switch (i) {
+            case 0:
+                return cbChannel0;
+            case 1:
+                return cbChannel1;
+            case 2:
+                return cbChannel2;
+            case 3:
+                return cbChannel3;
+            case 4:
+                return cbChannel4;
+            case 5:
+                return cbChannel5;
+            case 6:
+                return cbChannel6;
+            case 7:
+                return cbChannel7;
+            case 8:
+                return cbChannel8;
+            case 9:
+                return cbChannel9;
+            case 10:
+                return cbChannel10;
+            case 11:
+                return cbChannel11;
+            case 12:
+                return cbChannel12;
+            case 13:
+                return cbChannel13;
+            case 14:
+                return cbChannel14;
+            case 15:
+                return cbChannel15;
+        }
+        return null;
+    }
+    
     public void updateTrackPanel() {
         int selectedTrack = ((Integer)spinTrack.getValue()).intValue();
         labelSelectedTrack.setText("Track " + selectedTrack);
         int channelCount = 0;
+        boolean openChannelFound = false;
         for (int i = 0; i < 16; i++) {
             if (channels[selectedTrack][i]) {
                 channelCount++;
+            }
+            if (channels[selectedTrack][i]) {
+                getChannelCheckbox(i).setEnabled(true);
+                getChannelCheckbox(i).setSelected(!openChannelFound); // Just select the first.
+                openChannelFound = true;
+            } else {
+                getChannelCheckbox(i).setEnabled(false);
+                getChannelCheckbox(i).setSelected(false);
             }
         }
         labelChannels.setText("Channels: " + channelCount);
@@ -278,6 +538,70 @@ public class RFMainWindow extends javax.swing.JFrame {
     private void spinTrackStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinTrackStateChanged
         updateTrackPanel();
     }//GEN-LAST:event_spinTrackStateChanged
+
+    private void cbChannel15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel15ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel15ActionPerformed
+
+    private void cbChannel14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel14ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel14ActionPerformed
+
+    private void cbChannel13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel13ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel13ActionPerformed
+
+    private void cbChannel12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel12ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel12ActionPerformed
+
+    private void cbChannel11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel11ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel11ActionPerformed
+
+    private void cbChannel10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel10ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel10ActionPerformed
+
+    private void cbChannel9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel9ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel9ActionPerformed
+
+    private void cbChannel8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel8ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel8ActionPerformed
+
+    private void cbChannel7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel7ActionPerformed
+
+    private void cbChannel6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel6ActionPerformed
+
+    private void cbChannel5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel5ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel5ActionPerformed
+
+    private void cbChannel4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel4ActionPerformed
+
+    private void cbChannel3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel3ActionPerformed
+
+    private void cbChannel2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel2ActionPerformed
+
+    private void cbChannel1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel1ActionPerformed
+
+    private void cbChannel0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel0ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbChannel0ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -314,6 +638,22 @@ public class RFMainWindow extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox cbChannel0;
+    private javax.swing.JCheckBox cbChannel1;
+    private javax.swing.JCheckBox cbChannel10;
+    private javax.swing.JCheckBox cbChannel11;
+    private javax.swing.JCheckBox cbChannel12;
+    private javax.swing.JCheckBox cbChannel13;
+    private javax.swing.JCheckBox cbChannel14;
+    private javax.swing.JCheckBox cbChannel15;
+    private javax.swing.JCheckBox cbChannel2;
+    private javax.swing.JCheckBox cbChannel3;
+    private javax.swing.JCheckBox cbChannel4;
+    private javax.swing.JCheckBox cbChannel5;
+    private javax.swing.JCheckBox cbChannel6;
+    private javax.swing.JCheckBox cbChannel7;
+    private javax.swing.JCheckBox cbChannel8;
+    private javax.swing.JCheckBox cbChannel9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -323,6 +663,8 @@ public class RFMainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JLabel labelChannels;
