@@ -578,72 +578,82 @@ public class RFMainWindow extends javax.swing.JFrame {
         labelChannels.setText("Channels: " + channelCount);
     }
     
+    public void hotswapSequence() {
+        if (midiPlayer != null) {
+            try {
+                midiPlayer.hotswapSequence(compileSequence());
+            } catch (InvalidMidiDataException ex) {
+                Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
     private void spinTrackStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinTrackStateChanged
         updateTrackPanel();
     }//GEN-LAST:event_spinTrackStateChanged
 
     private void cbChannel15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel15ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel15ActionPerformed
 
     private void cbChannel14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel14ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel14ActionPerformed
 
     private void cbChannel13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel13ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel13ActionPerformed
 
     private void cbChannel12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel12ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel12ActionPerformed
 
     private void cbChannel11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel11ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel11ActionPerformed
 
     private void cbChannel10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel10ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel10ActionPerformed
 
     private void cbChannel9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel9ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel9ActionPerformed
 
     private void cbChannel8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel8ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel8ActionPerformed
 
     private void cbChannel7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel7ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel7ActionPerformed
 
     private void cbChannel6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel6ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel6ActionPerformed
 
     private void cbChannel5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel5ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel5ActionPerformed
 
     private void cbChannel4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel4ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel4ActionPerformed
 
     private void cbChannel3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel3ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel3ActionPerformed
 
     private void cbChannel2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel2ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel2ActionPerformed
 
     private void cbChannel1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel1ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel1ActionPerformed
 
     private void cbChannel0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel0ActionPerformed
-        // TODO add your handling code here:
+        hotswapSequence();
     }//GEN-LAST:event_cbChannel0ActionPerformed
 
     public Sequence compileSequence() {
