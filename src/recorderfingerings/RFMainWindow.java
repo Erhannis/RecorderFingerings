@@ -81,6 +81,7 @@ public class RFMainWindow extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         btnPlayPause = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
+        labelCurrentNote = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -120,7 +121,7 @@ public class RFMainWindow extends javax.swing.JFrame {
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(spinTrack, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 48, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(454, Short.MAX_VALUE))
+                .addContainerGap(494, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -344,7 +345,7 @@ public class RFMainWindow extends javax.swing.JFrame {
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(labelSelectedTrack)
                     .add(labelChannels))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 304, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 344, Short.MAX_VALUE)
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 169, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -368,9 +369,9 @@ public class RFMainWindow extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 563, Short.MAX_VALUE)
+            .add(0, 603, Short.MAX_VALUE)
             .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane2))
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -407,21 +408,27 @@ public class RFMainWindow extends javax.swing.JFrame {
         });
         jToolBar1.add(btnStop);
 
+        labelCurrentNote.setText("-");
+
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(457, Short.MAX_VALUE))
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(labelCurrentNote))
+                .addContainerGap(497, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(labelCurrentNote)
+                .addContainerGap(189, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -447,11 +454,11 @@ public class RFMainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane1)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane1)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
         );
 
         pack();
@@ -699,17 +706,29 @@ public class RFMainWindow extends javax.swing.JFrame {
         return newSq;
     }
     
+    public MidiPlayer.MidiEventListener makeMidiEventListener() {
+        return new MidiPlayer.MidiEventListener() {
+            @Override
+            public void onEvent(MidiEvent event) {
+                if ((event.getMessage().getStatus() & 0xF0) == 0x90) {
+                    labelCurrentNote.setText(MidiConversions.pitches[(int)(event.getMessage().getMessage()[1] & 0xFF)]);
+                }
+            }
+        };
+    }
+    
     private void btnPlayPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayPauseActionPerformed
         if (sequence != null) {
             try {
                 if (midiPlayer == null) {
                     midiPlayer = new MidiPlayer(compileSequence());
+                    midiPlayer.setMidiEventListener(makeMidiEventListener());
                 }
-                if (midiPlayer.sequencer.isRunning()) {
-                    midiPlayer.sequencer.stop();
+                if (midiPlayer.isRunning()) {
+                    midiPlayer.stop();
                     btnPlayPause.setText("|>");
                 } else {
-                    midiPlayer.sequencer.start();
+                    midiPlayer.start();
                     btnPlayPause.setText("||");
                 }
             } catch (MidiUnavailableException ex) {
@@ -722,17 +741,12 @@ public class RFMainWindow extends javax.swing.JFrame {
 
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         if (sequence != null) {
-            try {
-                if (midiPlayer != null) {
-                    midiPlayer.sequencer.stop();
-                    btnPlayPause.setText("|>");
-                }
-                midiPlayer = new MidiPlayer(compileSequence());
-            } catch (MidiUnavailableException ex) {
-                Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvalidMidiDataException ex) {
-                Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            if (midiPlayer != null) {
+                midiPlayer.stop();
+                midiPlayer.released = true;
+                btnPlayPause.setText("|>");
             }
+            midiPlayer = null;
         }
     }//GEN-LAST:event_btnStopActionPerformed
 
@@ -804,6 +818,7 @@ public class RFMainWindow extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel labelChannels;
+    private javax.swing.JLabel labelCurrentNote;
     private javax.swing.JLabel labelFileName;
     private javax.swing.JLabel labelSelectedTrack;
     private javax.swing.JLabel labelTracks;
