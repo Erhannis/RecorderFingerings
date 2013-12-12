@@ -6,6 +6,7 @@ package recorderfingerings;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.midi.InvalidMidiDataException;
@@ -13,6 +14,7 @@ import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiFileFormat;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Track;
 import javax.swing.JCheckBox;
@@ -30,6 +32,11 @@ public class RFMainWindow extends javax.swing.JFrame {
      */
     public RFMainWindow() {
         initComponents();
+        try {
+            MidiPlayer.ensureReceivingDevice();
+        } catch (MidiUnavailableException ex) {
+            Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -71,6 +78,9 @@ public class RFMainWindow extends javax.swing.JFrame {
         cbChannel14 = new javax.swing.JCheckBox();
         cbChannel15 = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        btnPlayPause = new javax.swing.JButton();
+        btnStop = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -373,15 +383,45 @@ public class RFMainWindow extends javax.swing.JFrame {
 
         jSplitPane1.setLeftComponent(jPanel3);
 
+        jToolBar1.setRollover(true);
+
+        btnPlayPause.setText("|>");
+        btnPlayPause.setFocusable(false);
+        btnPlayPause.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnPlayPause.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnPlayPause.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPlayPauseActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnPlayPause);
+
+        btnStop.setText("[_]");
+        btnStop.setFocusable(false);
+        btnStop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnStop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnStop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStopActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnStop);
+
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 563, Short.MAX_VALUE)
+            .add(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(457, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 95, Short.MAX_VALUE)
+            .add(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(64, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -418,13 +458,16 @@ public class RFMainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public JFileChooser chooser = new JFileChooser();
+    public File chosenFile;
     public Sequence sequence = null;
     public boolean[][] channels;
+    public MidiPlayer midiPlayer;
     
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 File file = chooser.getSelectedFile();
+                chosenFile = file;
                 MidiFileFormat mff = MidiSystem.getMidiFileFormat(file);
                 sequence = MidiSystem.getSequence(file);
                 
@@ -603,6 +646,86 @@ public class RFMainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbChannel0ActionPerformed
 
+    public Sequence compileSequence() {
+        Sequence newSq = null;
+                
+        if (this.sequence != null) {
+            try {
+                newSq = MidiSystem.getSequence(chosenFile);
+                Track[] tracks = newSq.getTracks();
+                Track chosenTrack = tracks[((Integer)spinTrack.getValue()).intValue()];
+                for (Track t : tracks) {
+                    if (t != chosenTrack){
+                        newSq.deleteTrack(t);
+                    }
+                }
+                ArrayList<MidiEvent> eventsToDelete = new ArrayList<MidiEvent>();
+                Track t = chosenTrack;
+                boolean[] chosenChannels = new boolean[16];
+                for (int i = 0; i < 16; i++) {
+                    chosenChannels[i] = getChannelCheckbox(i).isSelected();
+                }
+                //TODO This could maybe be done in one pass.
+                for (int i = 0; i < t.size(); i++) {
+                    MidiEvent event = t.get(i);
+                    MidiMessage message = event.getMessage();
+                    int status = message.getStatus();
+                    int type = (status & 0xF0) >> 4;
+                    int channel = status & 0xF;
+                    if ((type == 0x9) && (!chosenChannels[channel])) {
+                        eventsToDelete.add(event);
+                    }
+                }
+                for (MidiEvent event : eventsToDelete) {
+                    t.remove(event);
+                }
+            } catch (InvalidMidiDataException ex) {
+                Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        return newSq;
+    }
+    
+    private void btnPlayPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayPauseActionPerformed
+        if (sequence != null) {
+            try {
+                if (midiPlayer == null) {
+                    midiPlayer = new MidiPlayer(compileSequence());
+                }
+                if (midiPlayer.sequencer.isRunning()) {
+                    midiPlayer.sequencer.stop();
+                    btnPlayPause.setText("|>");
+                } else {
+                    midiPlayer.sequencer.start();
+                    btnPlayPause.setText("||");
+                }
+            } catch (MidiUnavailableException ex) {
+                Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidMidiDataException ex) {
+                Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnPlayPauseActionPerformed
+
+    private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
+        if (sequence != null) {
+            try {
+                if (midiPlayer != null) {
+                    midiPlayer.sequencer.stop();
+                    btnPlayPause.setText("|>");
+                }
+                midiPlayer = new MidiPlayer(compileSequence());
+            } catch (MidiUnavailableException ex) {
+                Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidMidiDataException ex) {
+                Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnStopActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -638,6 +761,8 @@ public class RFMainWindow extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnPlayPause;
+    private javax.swing.JButton btnStop;
     private javax.swing.JCheckBox cbChannel0;
     private javax.swing.JCheckBox cbChannel1;
     private javax.swing.JCheckBox cbChannel10;
@@ -667,6 +792,7 @@ public class RFMainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel labelChannels;
     private javax.swing.JLabel labelFileName;
     private javax.swing.JLabel labelSelectedTrack;
