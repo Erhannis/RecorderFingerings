@@ -90,7 +90,9 @@ public class RFMainWindow extends javax.swing.JFrame {
         cbChannel15 = new javax.swing.JCheckBox();
         spinTranspose = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        spinSpeed = new javax.swing.JSpinner();
+        jLabel3 = new javax.swing.JLabel();
+        cbFlipFingerings = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnPlayPause = new javax.swing.JButton();
@@ -103,6 +105,7 @@ public class RFMainWindow extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Recorder Fingerings");
 
         jSplitPane1.setDividerLocation(300);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
@@ -361,12 +364,18 @@ public class RFMainWindow extends javax.swing.JFrame {
 
         jLabel2.setText("Transpose:");
 
-        jButton1.setText("TEST");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+        spinSpeed.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(100.0f), Float.valueOf(0.0f), null, Float.valueOf(1.0f)));
+        spinSpeed.setEnabled(false);
+        spinSpeed.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinSpeedStateChanged(evt);
             }
         });
+
+        jLabel3.setText("Speed:");
+
+        cbFlipFingerings.setText("Flip fingerings");
+        cbFlipFingerings.setEnabled(false);
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -374,16 +383,20 @@ public class RFMainWindow extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(labelSelectedTrack)
                     .add(labelChannels)
                     .add(jPanel4Layout.createSequentialGroup()
                         .add(jLabel2)
                         .add(18, 18, 18)
-                        .add(spinTranspose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 57, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 193, Short.MAX_VALUE)
-                        .add(jButton1)))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(spinTranspose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 57, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel4Layout.createSequentialGroup()
+                        .add(jLabel3)
+                        .add(18, 18, 18)
+                        .add(spinSpeed)))
+                .add(18, 18, 18)
+                .add(cbFlipFingerings)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 133, Short.MAX_VALUE)
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 169, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -397,11 +410,15 @@ public class RFMainWindow extends javax.swing.JFrame {
                         .add(labelSelectedTrack)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(labelChannels)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 115, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 83, Short.MAX_VALUE)
+                        .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(spinSpeed, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel3))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(spinTranspose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(jLabel2)
-                            .add(jButton1))))
+                            .add(cbFlipFingerings))))
                 .addContainerGap())
         );
 
@@ -555,6 +572,8 @@ public class RFMainWindow extends javax.swing.JFrame {
                 spinTrack.setModel(new SpinnerNumberModel(0, 0, trackCount - 1, 1));
                 spinTrack.setEnabled(true);
                 spinTranspose.setEnabled(true);
+                spinSpeed.setEnabled(true);
+                cbFlipFingerings.setEnabled(true);
                 channels = new boolean[trackCount][16];
 
                 //System.out.println("Tracks: " + trackCount);
@@ -659,6 +678,7 @@ public class RFMainWindow extends javax.swing.JFrame {
         if (midiPlayer != null) {
             try {
                 midiPlayer.hotswapSequence(compileSequence());
+                midiPlayer.setTempoFactor(((Float)spinSpeed.getValue()).floatValue() / 100);
             } catch (InvalidMidiDataException ex) {
                 Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -788,7 +808,7 @@ public class RFMainWindow extends javax.swing.JFrame {
                 if ((event.getMessage().getStatus() & 0xF0) == 0x90) {
                     int pitch = (int)(event.getMessage().getMessage()[1] & 0xFF);
                     labelCurrentNote.setText(MidiConversions.pitches[pitch]);
-                    imagePanel.setImage(midiConversions.getImage(pitch));
+                    imagePanel.setImage(midiConversions.getImage(pitch, cbFlipFingerings.isSelected()));
                 }
             }
         };
@@ -800,6 +820,7 @@ public class RFMainWindow extends javax.swing.JFrame {
                 if (midiPlayer == null) {
                     midiPlayer = new MidiPlayer(compileSequence());
                     midiPlayer.setMidiEventListener(makeMidiEventListener());
+                    midiPlayer.setTempoFactor(((Float)spinSpeed.getValue()).floatValue() / 100);
                 }
                 if (midiPlayer.isRunning()) {
                     midiPlayer.stop();
@@ -831,12 +852,13 @@ public class RFMainWindow extends javax.swing.JFrame {
         hotswapSequence();
     }//GEN-LAST:event_spinTransposeStateChanged
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void jPanel6AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jPanel6AncestorAdded
         // TODO add your handling code here:
     }//GEN-LAST:event_jPanel6AncestorAdded
+
+    private void spinSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinSpeedStateChanged
+        hotswapSequence();
+    }//GEN-LAST:event_spinSpeedStateChanged
 
     /**
      * @param args the command line arguments
@@ -891,9 +913,10 @@ public class RFMainWindow extends javax.swing.JFrame {
     private javax.swing.JCheckBox cbChannel7;
     private javax.swing.JCheckBox cbChannel8;
     private javax.swing.JCheckBox cbChannel9;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JCheckBox cbFlipFingerings;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -913,6 +936,7 @@ public class RFMainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel labelFileName;
     private javax.swing.JLabel labelSelectedTrack;
     private javax.swing.JLabel labelTracks;
+    private javax.swing.JSpinner spinSpeed;
     private javax.swing.JSpinner spinTrack;
     private javax.swing.JSpinner spinTranspose;
     // End of variables declaration//GEN-END:variables

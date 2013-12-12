@@ -15,6 +15,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
+import javax.sound.midi.Track;
 import javax.sound.midi.Transmitter;
 import javax.swing.Timer;
 
@@ -69,6 +70,10 @@ public class MidiPlayer {
         sequencer.setSequence(sequence);
         sequencer.setTickPosition(pos);
         listener.currentIndex = MidiUtilities.findEventIndex(sequence.getTracks()[0], pos);
+    }
+
+    public void setTempoFactor(float factor) {
+        sequencer.setTempoFactor(factor);
     }
     
     public static MidiDevice getReceivingDevice() throws MidiUnavailableException {
@@ -127,28 +132,35 @@ public class MidiPlayer {
             eventTimer.stop();
             return;
         }
+        Track t = sequence.getTracks()[0];
         long tick = sequencer.getTickPosition();
-        MidiEvent curEvent = sequence.getTracks()[0].get(listener.currentIndex);
+
+        if (listener.currentIndex >= t.size()) {
+            eventTimer.stop();
+            return;
+        }
+        
+        MidiEvent curEvent = t.get(listener.currentIndex);
         int count = 0;
-        while (curEvent.getTick() < tick) {
-            curEvent = sequence.getTracks()[0].get(listener.currentIndex);
+        while (curEvent.getTick() <= tick) {
+            curEvent = t.get(listener.currentIndex);
             listener.onEvent(curEvent);
             listener.currentIndex++;
             count++;
         }
         if (count > 1) {
-            System.out.println("Lag " + (count - 1));
+            //System.out.println("Lag " + (count - 1));
         }
-        eventTimer.setDelay(Math.min((int)((curEvent.getTick() - tick) * millisPerTick()), 50));
+        eventTimer.setDelay(Math.min((int)(((curEvent.getTick() - tick) * microsPerTick()) / 1000), 50));
     }
     
-    public long millisPerTick() {
+    public long microsPerTick() {
         if (sequence.getDivisionType() == Sequence.PPQ) {
-            return (long)(60000 / (sequence.getResolution() * sequencer.getTempoInBPM() * sequencer.getTempoFactor()));
+            return (long)(60000000 / (sequence.getResolution() * sequencer.getTempoInBPM() * sequencer.getTempoFactor()));
         } else {
             System.err.println("Oh heck!  Weird resolution!");
         }
-        return 10;
+        return 10000;
     }
     
     public static abstract class MidiEventListener {

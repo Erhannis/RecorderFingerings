@@ -4,6 +4,8 @@
  */
 package recorderfingerings;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -24,6 +26,7 @@ public class MidiConversions {
     public static final String[] recorderPitches = {"11Cn","11Cs","12Dn","12Ds","13En","14Fn","14Fs","15Gn","15Gs","16An","17Bb","17Bn","21Cn","21Cs","22Dn","22Ds","23En","24Fn","24Fs","25Gn","25Gs","26An","27Bb","27Bn","31Cn","31Cs","32Dn","32Ds","33En","34Fn","34Fs","35Gn","35Gs","36An","99xx"};
     
     public static Image[] firstImages = new Image[recorderPitches.length];
+    public static Image[] firstImagesUpsideDown = new Image[recorderPitches.length];
     
     public static final String BASE_PITCH = "C5";
     public static int basePitchInt = 0;
@@ -38,15 +41,25 @@ public class MidiConversions {
         for (int i = 0; i < firstImages.length; i++) {
             Image image = firstImage(recorderPitches[i]);
             firstImages[i] = image;
+            int width = image.getWidth(null);
+            int height = image.getHeight(null);
+            BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+            Graphics2D g = bi.createGraphics();
+            g.drawImage(image, width, height, -width, -height, null);
+            firstImagesUpsideDown[i] = bi;
         }
     }
     
-    public Image getImage(int note) {
+    public Image getImage(int note, boolean upsideDown) {
         int newIndex = note - basePitchInt;
         if (newIndex < 0 || newIndex >= recorderPitches.length) {
             newIndex = recorderPitches.length - 1;
         }
-        return firstImages[newIndex];
+        if (upsideDown) {
+            return firstImagesUpsideDown[newIndex];
+        } else {
+            return firstImages[newIndex];
+        }
     }
     
     public int sidebarWidth = 39;
@@ -99,6 +112,10 @@ public class MidiConversions {
         
         BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D g = bi.createGraphics();
+        if (note.equals("99xx")) {
+            g.setColor(Color.red);
+            g.fillRect(0, 0, width, height);
+        }
         g.drawImage(first[0], 0, 0, null);
         int y = 0;
         for (int i = 1; i < nBildTeile; i++) {
