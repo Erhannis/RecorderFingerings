@@ -16,6 +16,7 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Track;
 import javax.swing.JFileChooser;
+import javax.swing.SpinnerNumberModel;
 import mathnstuff.MeUtils;
 
 /**
@@ -41,7 +42,16 @@ public class RFMainWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         jSplitPane1 = new javax.swing.JSplitPane();
+        jPanel3 = new javax.swing.JPanel();
+        jSplitPane2 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
+        labelFileName = new javax.swing.JLabel();
+        labelTracks = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        spinTrack = new javax.swing.JSpinner();
+        jPanel4 = new javax.swing.JPanel();
+        labelSelectedTrack = new javax.swing.JLabel();
+        labelChannels = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -50,30 +60,111 @@ public class RFMainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jSplitPane1.setDividerLocation(200);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane2.setToolTipText("");
+
+        labelFileName.setText("File: -");
+
+        labelTracks.setText("Tracks: -");
+
+        jLabel1.setText("Track:");
+
+        spinTrack.setEnabled(false);
+        spinTrack.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinTrackStateChanged(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 396, Short.MAX_VALUE)
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(labelFileName)
+                    .add(labelTracks)
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .add(jLabel1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(spinTrack, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 48, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(454, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 100, Short.MAX_VALUE)
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(labelFileName)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(labelTracks)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(spinTrack, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel1))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jSplitPane1.setTopComponent(jPanel1);
+        jSplitPane2.setTopComponent(jPanel1);
+
+        labelSelectedTrack.setText("Track -");
+
+        labelChannels.setText("Channels: -");
+
+        org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(labelSelectedTrack)
+                    .add(labelChannels))
+                .addContainerGap(479, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(labelSelectedTrack)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(labelChannels)
+                .addContainerGap(51, Short.MAX_VALUE))
+        );
+
+        jSplitPane2.setRightComponent(jPanel4);
+
+        org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 563, Short.MAX_VALUE)
+            .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 198, Short.MAX_VALUE)
+            .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
+                    .add(jSplitPane2)
+                    .addContainerGap()))
+        );
+
+        jSplitPane1.setLeftComponent(jPanel3);
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 396, Short.MAX_VALUE)
+            .add(0, 563, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 165, Short.MAX_VALUE)
+            .add(0, 195, Short.MAX_VALUE)
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -99,30 +190,50 @@ public class RFMainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane1)
+            .add(layout.createSequentialGroup()
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 567, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+            .add(layout.createSequentialGroup()
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 406, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     public JFileChooser chooser = new JFileChooser();
+    public Sequence sequence = null;
+    public boolean[][] channels;
     
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 File file = chooser.getSelectedFile();
                 MidiFileFormat mff = MidiSystem.getMidiFileFormat(file);
-                Sequence s = MidiSystem.getSequence(file);
-                System.out.println("Tracks: " + s.getTracks().length);
-                for (Track t : s.getTracks()) {
-                    System.out.println("Track " + t + " ----------------------------------------------");
-                    System.out.println("Events: " + t.size());
-                    for (int i = 0; i < t.size(); i++) {
-                        MidiEvent event = t.get(i);
+                sequence = MidiSystem.getSequence(file);
+                
+                Track[] tracks = sequence.getTracks();
+                int trackCount = tracks.length;
+                
+                labelFileName.setText("File: " + file.getAbsolutePath());
+                labelTracks.setText("Tracks: " + trackCount);
+                spinTrack.setModel(new SpinnerNumberModel(0, 0, trackCount - 1, 1));
+                spinTrack.setEnabled(true);
+                channels = new boolean[trackCount][16];
+
+                //System.out.println("Tracks: " + trackCount);
+                for (int i = 0; i < trackCount; i++) {
+                    Track t = tracks[i];
+                    for (int j = 0; j < 16; j++) {
+                        channels[i][j] = false;
+                    }
+                    //System.out.println("Track " + t + " ----------------------------------------------");
+                    //System.out.println("Events: " + t.size());
+                    for (int j = 0; j < t.size(); j++) {
+                        MidiEvent event = t.get(j);
                         MidiMessage message = event.getMessage();
                         int status = message.getStatus();
                         int type = (status & 0xF0) >> 4;
@@ -133,14 +244,17 @@ public class RFMainWindow extends javax.swing.JFrame {
                                 break;
                             case 0x9:
                                 // Note on
+                                channels[i][channel] = true;
                                 int pitch = (int)(message.getMessage()[1] & 0xFF);
-                                System.out.println("Event " + i + "  \tat " + event.getTick());
-                                System.out.println("Message " + Integer.toHexString(message.getStatus()) + " " + MeUtils.bytesToHex(message.getMessage()));
-                                System.out.println(event.getTick() + " \t - " + Integer.toHexString(channel) + " : " + Integer.toHexString(pitch));
+                                //System.out.println("Event " + j + "  \tat " + event.getTick());
+                                //System.out.println("Message " + Integer.toHexString(message.getStatus()) + " " + MeUtils.bytesToHex(message.getMessage()));
+                                //System.out.println(event.getTick() + " \t - " + Integer.toHexString(channel) + " : " + Integer.toHexString(pitch));
                                 break;
                         }
                     }
                 }
+                
+                updateTrackPanel();
             } catch (InvalidMidiDataException ex) {
                 Logger.getLogger(RecorderFingerings.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
@@ -148,6 +262,22 @@ public class RFMainWindow extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    public void updateTrackPanel() {
+        int selectedTrack = ((Integer)spinTrack.getValue()).intValue();
+        labelSelectedTrack.setText("Track " + selectedTrack);
+        int channelCount = 0;
+        for (int i = 0; i < 16; i++) {
+            if (channels[selectedTrack][i]) {
+                channelCount++;
+            }
+        }
+        labelChannels.setText("Channels: " + channelCount);
+    }
+    
+    private void spinTrackStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinTrackStateChanged
+        updateTrackPanel();
+    }//GEN-LAST:event_spinTrackStateChanged
 
     /**
      * @param args the command line arguments
@@ -184,12 +314,21 @@ public class RFMainWindow extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JLabel labelChannels;
+    private javax.swing.JLabel labelFileName;
+    private javax.swing.JLabel labelSelectedTrack;
+    private javax.swing.JLabel labelTracks;
+    private javax.swing.JSpinner spinTrack;
     // End of variables declaration//GEN-END:variables
 }
