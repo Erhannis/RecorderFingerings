@@ -80,6 +80,14 @@ public class MidiPlayer {
         sequencer.setTempoFactor(factor);
     }
     
+    /**
+     * Try not to use this.
+     * @return 
+     */
+    public Sequencer getSequencer() {
+        return sequencer;
+    }
+    
     public static MidiDevice getReceivingDevice() throws MidiUnavailableException {
         for (MidiDevice.Info mdi: MidiSystem.getMidiDeviceInfo()) {
             MidiDevice dev = MidiSystem.getMidiDevice(mdi);
@@ -143,12 +151,12 @@ public class MidiPlayer {
         }
         
         int delay = 50; // Max delay
+
+        long tick = sequencer.getTickPosition();
         
         boolean finished = true;
         for (int i = 0; i < listener.tracks.length; i++) {
             Track t = listener.tracks[i];
-
-            long tick = sequencer.getTickPosition();
             
             int size = t.size();
             if (listener.currentIndices[i] >= size || listener.currentIndices[i] < 0) {
@@ -167,7 +175,9 @@ public class MidiPlayer {
                 count++;
             }
             
-            delay = Math.min(delay, (int)(((curEvent.getTick() - tick) * microsPerTick()) / 1000));
+            if (listener.currentIndices[i] < size) {
+                delay = Math.min(delay, (int)(((curEvent.getTick() - tick) * microsPerTick()) / 1000));
+            }
         }
         if (finished) {
             eventTimer.stop();

@@ -39,9 +39,10 @@ public class RFMainWindow extends javax.swing.JFrame {
      */
     public RFMainWindow() {
         initComponents();
-        tablePlayShow.getModel().addTableModelListener(new TableModelListener() {
+        tablePlayShow.getModel().addTableModelListener(new TableModelListener() {            
             @Override
             public void tableChanged(TableModelEvent e) {
+                //TODO Ugh.  This happens when the user highlights a different row.
                 if (e.getType() == TableModelEvent.UPDATE) {
                     hotswapSequence();
                 }
@@ -358,7 +359,7 @@ public class RFMainWindow extends javax.swing.JFrame {
                 chosenFile = file;
                 MidiFileFormat mff = MidiSystem.getMidiFileFormat(file);
                 sequence = MidiSystem.getSequence(file);
-                
+                                
                 Track[] tracks = sequence.getTracks();
                 int trackCount = tracks.length;
                 
@@ -410,6 +411,7 @@ public class RFMainWindow extends javax.swing.JFrame {
     
     public void updateTrackPanel() {     
         DefaultTableModel model = ((DefaultTableModel)tablePlayShow.getModel());
+        model.setRowCount(0);
         int channelCount = 0;
         boolean openChannelFound = false;
         for (int i = 0; i < channels.length; i++) {
