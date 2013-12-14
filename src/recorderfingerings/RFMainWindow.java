@@ -433,8 +433,8 @@ public class RFMainWindow extends javax.swing.JFrame {
         }
     }
     
-    public boolean[][] playingChannelsOfTracksIncluded;
-    public boolean[][] showingChannelsOfTracksIncluded;
+    public boolean[][] playingChannels;
+    public boolean[][] showingChannels;
     
     public Sequence compileSequence() {
         Sequence newSq = null;
@@ -443,35 +443,13 @@ public class RFMainWindow extends javax.swing.JFrame {
             try {
                 //TODO This is inefficient.
                 newSq = MidiSystem.getSequence(chosenFile);
+
                 Track[] tracks = newSq.getTracks();
-                int[] trackIndexConversion = new int[tracks.length];
-                for (int i = 0; i < trackIndexConversion.length; i++) {
-                    trackIndexConversion[i] = i;
-                }
                 
                 DefaultTableModel model = ((DefaultTableModel)tablePlayShow.getModel());
-                
-                HashSet<Integer> includedTracks = new HashSet<Integer>();
-                for (int i = 0; i < model.getRowCount(); i++) {
-                    if (((Boolean)model.getValueAt(i, 0)) || ((Boolean)model.getValueAt(i, 1))) {
-                        includedTracks.add((Integer)model.getValueAt(i, 2));
-                    }
-                }
-                
-                for (int i = 0; i < tracks.length; i++) {
-                    Track t = tracks[i];
-                    if (!includedTracks.contains(i)){
-                        newSq.deleteTrack(t);
-                        for (int j = i; j < trackIndexConversion.length; j++) {
-                            trackIndexConversion[j]--;
-                        }
-                    }
-                }
-                
-                tracks = newSq.getTracks();
-                
-                playingChannelsOfTracksIncluded = new boolean[tracks.length][16];
-                showingChannelsOfTracksIncluded = new boolean[tracks.length][16];
+                                
+                playingChannels = new boolean[tracks.length][16];
+                showingChannels = new boolean[tracks.length][16];
                 
                 for (int i = 0; i < model.getRowCount(); i++) {
                     boolean playing = (Boolean)model.getValueAt(i, 0);
@@ -479,10 +457,10 @@ public class RFMainWindow extends javax.swing.JFrame {
                     int track = (Integer)model.getValueAt(i, 2);
                     int channel = (Integer)model.getValueAt(i, 3);
                     if (playing) {
-                        playingChannelsOfTracksIncluded[trackIndexConversion[track]][channel] = true;
+                        playingChannels[track][channel] = true;
                     }
                     if (showing) {
-                        showingChannelsOfTracksIncluded[trackIndexConversion[track]][channel] = true;
+                        showingChannels[track][channel] = true;
                     }
                 }
                 
@@ -491,7 +469,7 @@ public class RFMainWindow extends javax.swing.JFrame {
                     Track t = tracks[i];
                     boolean[] includedChannels = new boolean[16];
                     for (int j = 0; j < 16; j++) {
-                        includedChannels[j] = playingChannelsOfTracksIncluded[i][j] || showingChannelsOfTracksIncluded[i][j];
+                        includedChannels[j] = playingChannels[i][j] || showingChannels[i][j];
                     }
 
                     //TODO This could maybe be done in one pass.
@@ -507,7 +485,7 @@ public class RFMainWindow extends javax.swing.JFrame {
                             } else if (message instanceof ShortMessage) {
                                 ShortMessage m = (ShortMessage) message;
                                 int pitch = m.getData1() + ((Integer) spinTranspose.getValue()).intValue();
-                                int volume = playingChannelsOfTracksIncluded[i][channel] ? m.getData2() : 0;
+                                int volume = playingChannels[i][channel] ? m.getData2() : 0;
                                 m.setMessage(m.getCommand(), m.getChannel(), pitch, volume);
                             }
                         }
@@ -534,7 +512,7 @@ public class RFMainWindow extends javax.swing.JFrame {
                 int status = message.getStatus();
                 int type = (status & 0xF0) >> 4;
                 int channel = status & 0xF;
-                if (type == 0x9 && showingChannelsOfTracksIncluded[track][channel]) {
+                if (type == 0x9 && showingChannels[track][channel]) {
                     byte[] messageData = message.getMessage();
                     int pitch = (int)(messageData[1] & 0xFF);
                     labelCurrentNote.setText(MidiConversions.pitches[pitch]);

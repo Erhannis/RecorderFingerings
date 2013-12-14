@@ -135,7 +135,7 @@ public class MidiPlayer {
 
     public boolean released = false;
     
-    private void updateMidiEventListener(MidiEventListener listener) {
+    private synchronized void updateMidiEventListener(MidiEventListener listener) {
         //TODO Account for pausing.
         if (released) {
             eventTimer.stop();
@@ -150,15 +150,17 @@ public class MidiPlayer {
 
             long tick = sequencer.getTickPosition();
             
-            if (listener.currentIndices[i] >= t.size()) {
+            int size = t.size();
+            if (listener.currentIndices[i] >= size || listener.currentIndices[i] < 0) {
                 continue;
             }
             finished = false;
 
-            MidiEvent curEvent = t.get(listener.currentIndices[i]);
+            MidiEvent curEvent = null;
+            curEvent = t.get(listener.currentIndices[i]);
             int count = 0;
             //TODO This happens to be slightly inefficient
-            while (curEvent.getTick() <= tick) {
+            while (curEvent.getTick() <= tick && listener.currentIndices[i] < size) {
                 curEvent = t.get(listener.currentIndices[i]);
                 listener.onEvent(i, curEvent);
                 listener.currentIndices[i]++;
