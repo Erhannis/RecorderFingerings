@@ -4,10 +4,10 @@
  */
 package recorderfingerings;
 
-import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.midi.InvalidMidiDataException;
@@ -19,10 +19,11 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
-import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
-import javax.swing.SpinnerNumberModel;
-import mathnstuff.ImagePanel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import mathnstuff.components.ImagePanel;
 
 /**
  *
@@ -38,6 +39,14 @@ public class RFMainWindow extends javax.swing.JFrame {
      */
     public RFMainWindow() {
         initComponents();
+        tablePlayShow.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    hotswapSequence();
+                }
+            }
+        });
         try {
             MidiPlayer.ensureReceivingDevice();
         } catch (MidiUnavailableException ex) {
@@ -65,34 +74,14 @@ public class RFMainWindow extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         labelFileName = new javax.swing.JLabel();
         labelTracks = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        spinTrack = new javax.swing.JSpinner();
         jPanel4 = new javax.swing.JPanel();
-        labelSelectedTrack = new javax.swing.JLabel();
-        labelChannels = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jPanel5 = new javax.swing.JPanel();
-        cbChannel0 = new javax.swing.JCheckBox();
-        cbChannel1 = new javax.swing.JCheckBox();
-        cbChannel2 = new javax.swing.JCheckBox();
-        cbChannel3 = new javax.swing.JCheckBox();
-        cbChannel4 = new javax.swing.JCheckBox();
-        cbChannel5 = new javax.swing.JCheckBox();
-        cbChannel6 = new javax.swing.JCheckBox();
-        cbChannel7 = new javax.swing.JCheckBox();
-        cbChannel8 = new javax.swing.JCheckBox();
-        cbChannel9 = new javax.swing.JCheckBox();
-        cbChannel10 = new javax.swing.JCheckBox();
-        cbChannel11 = new javax.swing.JCheckBox();
-        cbChannel12 = new javax.swing.JCheckBox();
-        cbChannel13 = new javax.swing.JCheckBox();
-        cbChannel14 = new javax.swing.JCheckBox();
-        cbChannel15 = new javax.swing.JCheckBox();
         spinTranspose = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
         spinSpeed = new javax.swing.JSpinner();
         jLabel3 = new javax.swing.JLabel();
         cbFlipFingerings = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tablePlayShow = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnPlayPause = new javax.swing.JButton();
@@ -117,15 +106,6 @@ public class RFMainWindow extends javax.swing.JFrame {
 
         labelTracks.setText("Tracks: -");
 
-        jLabel1.setText("Track:");
-
-        spinTrack.setEnabled(false);
-        spinTrack.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinTrackStateChanged(evt);
-            }
-        });
-
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -134,12 +114,8 @@ public class RFMainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(labelFileName)
-                    .add(labelTracks)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(jLabel1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(spinTrack, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 48, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(494, Short.MAX_VALUE))
+                    .add(labelTracks))
+                .addContainerGap(693, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -148,211 +124,10 @@ public class RFMainWindow extends javax.swing.JFrame {
                 .add(labelFileName)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(labelTracks)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(spinTrack, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel1))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         jSplitPane2.setTopComponent(jPanel1);
-
-        labelSelectedTrack.setText("Track -");
-
-        labelChannels.setText("Channels: -");
-
-        cbChannel0.setText("Channel 0");
-        cbChannel0.setEnabled(false);
-        cbChannel0.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel0ActionPerformed(evt);
-            }
-        });
-
-        cbChannel1.setText("Channel 1");
-        cbChannel1.setEnabled(false);
-        cbChannel1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel1ActionPerformed(evt);
-            }
-        });
-
-        cbChannel2.setText("Channel 2");
-        cbChannel2.setEnabled(false);
-        cbChannel2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel2ActionPerformed(evt);
-            }
-        });
-
-        cbChannel3.setText("Channel 3");
-        cbChannel3.setEnabled(false);
-        cbChannel3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel3ActionPerformed(evt);
-            }
-        });
-
-        cbChannel4.setText("Channel 4");
-        cbChannel4.setEnabled(false);
-        cbChannel4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel4ActionPerformed(evt);
-            }
-        });
-
-        cbChannel5.setText("Channel 5");
-        cbChannel5.setEnabled(false);
-        cbChannel5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel5ActionPerformed(evt);
-            }
-        });
-
-        cbChannel6.setText("Channel 6");
-        cbChannel6.setEnabled(false);
-        cbChannel6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel6ActionPerformed(evt);
-            }
-        });
-
-        cbChannel7.setText("Channel 7");
-        cbChannel7.setEnabled(false);
-        cbChannel7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel7ActionPerformed(evt);
-            }
-        });
-
-        cbChannel8.setText("Channel 8");
-        cbChannel8.setEnabled(false);
-        cbChannel8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel8ActionPerformed(evt);
-            }
-        });
-
-        cbChannel9.setText("Channel 9");
-        cbChannel9.setEnabled(false);
-        cbChannel9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel9ActionPerformed(evt);
-            }
-        });
-
-        cbChannel10.setText("Channel 10");
-        cbChannel10.setEnabled(false);
-        cbChannel10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel10ActionPerformed(evt);
-            }
-        });
-
-        cbChannel11.setText("Channel 11");
-        cbChannel11.setEnabled(false);
-        cbChannel11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel11ActionPerformed(evt);
-            }
-        });
-
-        cbChannel12.setText("Channel 12");
-        cbChannel12.setEnabled(false);
-        cbChannel12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel12ActionPerformed(evt);
-            }
-        });
-
-        cbChannel13.setText("Channel 13");
-        cbChannel13.setEnabled(false);
-        cbChannel13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel13ActionPerformed(evt);
-            }
-        });
-
-        cbChannel14.setText("Channel 14");
-        cbChannel14.setEnabled(false);
-        cbChannel14.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel14ActionPerformed(evt);
-            }
-        });
-
-        cbChannel15.setText("Channel 15");
-        cbChannel15.setEnabled(false);
-        cbChannel15.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbChannel15ActionPerformed(evt);
-            }
-        });
-
-        org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(cbChannel0)
-                    .add(cbChannel1)
-                    .add(cbChannel2)
-                    .add(cbChannel3)
-                    .add(cbChannel4)
-                    .add(cbChannel5)
-                    .add(cbChannel6)
-                    .add(cbChannel7)
-                    .add(cbChannel8)
-                    .add(cbChannel9)
-                    .add(cbChannel10)
-                    .add(cbChannel11)
-                    .add(cbChannel12)
-                    .add(cbChannel13)
-                    .add(cbChannel14)
-                    .add(cbChannel15))
-                .addContainerGap(41, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(cbChannel0)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel2)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel3)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel4)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel5)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel6)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel7)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel8)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel9)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel10)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel11)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel12)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel13)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel14)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbChannel15)
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
-
-        jScrollPane2.setViewportView(jPanel5);
 
         spinTranspose.setModel(new javax.swing.SpinnerNumberModel(0, -128, 128, 1));
         spinTranspose.setEnabled(false);
@@ -377,6 +152,31 @@ public class RFMainWindow extends javax.swing.JFrame {
         cbFlipFingerings.setText("Flip fingerings");
         cbFlipFingerings.setEnabled(false);
 
+        tablePlayShow.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Play", "Show", "Track", "Channel"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, true, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tablePlayShow);
+
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -384,8 +184,6 @@ public class RFMainWindow extends javax.swing.JFrame {
             .add(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(labelSelectedTrack)
-                    .add(labelChannels)
                     .add(jPanel4Layout.createSequentialGroup()
                         .add(jLabel2)
                         .add(18, 18, 18)
@@ -396,8 +194,8 @@ public class RFMainWindow extends javax.swing.JFrame {
                         .add(spinSpeed)))
                 .add(18, 18, 18)
                 .add(cbFlipFingerings)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 133, Short.MAX_VALUE)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 169, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 223, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 237, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -405,12 +203,8 @@ public class RFMainWindow extends javax.swing.JFrame {
             .add(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .add(jPanel4Layout.createSequentialGroup()
-                        .add(labelSelectedTrack)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(labelChannels)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 83, Short.MAX_VALUE)
+                        .add(0, 121, Short.MAX_VALUE)
                         .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(spinSpeed, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(jLabel3))
@@ -418,7 +212,8 @@ public class RFMainWindow extends javax.swing.JFrame {
                         .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(spinTranspose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(jLabel2)
-                            .add(cbFlipFingerings))))
+                            .add(cbFlipFingerings)))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -428,7 +223,7 @@ public class RFMainWindow extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 603, Short.MAX_VALUE)
+            .add(0, 761, Short.MAX_VALUE)
             .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane2))
         );
@@ -499,7 +294,7 @@ public class RFMainWindow extends javax.swing.JFrame {
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(labelCurrentNote))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 327, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 485, Short.MAX_VALUE)
                 .add(jPanel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -513,7 +308,7 @@ public class RFMainWindow extends javax.swing.JFrame {
                         .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(labelCurrentNote)
-                        .add(0, 183, Short.MAX_VALUE)))
+                        .add(0, 237, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -569,8 +364,6 @@ public class RFMainWindow extends javax.swing.JFrame {
                 
                 labelFileName.setText("File: " + file.getAbsolutePath());
                 labelTracks.setText("Tracks: " + trackCount);
-                spinTrack.setModel(new SpinnerNumberModel(0, 0, trackCount - 1, 1));
-                spinTrack.setEnabled(true);
                 spinTranspose.setEnabled(true);
                 spinSpeed.setEnabled(true);
                 cbFlipFingerings.setEnabled(true);
@@ -614,64 +407,19 @@ public class RFMainWindow extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    public JCheckBox getChannelCheckbox(int i) {
-        switch (i) {
-            case 0:
-                return cbChannel0;
-            case 1:
-                return cbChannel1;
-            case 2:
-                return cbChannel2;
-            case 3:
-                return cbChannel3;
-            case 4:
-                return cbChannel4;
-            case 5:
-                return cbChannel5;
-            case 6:
-                return cbChannel6;
-            case 7:
-                return cbChannel7;
-            case 8:
-                return cbChannel8;
-            case 9:
-                return cbChannel9;
-            case 10:
-                return cbChannel10;
-            case 11:
-                return cbChannel11;
-            case 12:
-                return cbChannel12;
-            case 13:
-                return cbChannel13;
-            case 14:
-                return cbChannel14;
-            case 15:
-                return cbChannel15;
-        }
-        return null;
-    }
     
-    public void updateTrackPanel() {
-        int selectedTrack = ((Integer)spinTrack.getValue()).intValue();
-        labelSelectedTrack.setText("Track " + selectedTrack);
+    public void updateTrackPanel() {     
+        DefaultTableModel model = ((DefaultTableModel)tablePlayShow.getModel());
         int channelCount = 0;
         boolean openChannelFound = false;
-        for (int i = 0; i < 16; i++) {
-            if (channels[selectedTrack][i]) {
-                channelCount++;
-            }
-            if (channels[selectedTrack][i]) {
-                getChannelCheckbox(i).setEnabled(true);
-                getChannelCheckbox(i).setSelected(!openChannelFound); // Just select the first.
-                openChannelFound = true;
-            } else {
-                getChannelCheckbox(i).setEnabled(false);
-                getChannelCheckbox(i).setSelected(false);
+        for (int i = 0; i < channels.length; i++) {
+            for (int j = 0; j < channels[i].length; j++) {
+                if (channels[i][j]) {
+                    model.addRow(new Object[] {true, !openChannelFound, i, j});
+                    openChannelFound = true;
+                }
             }
         }
-        labelChannels.setText("Channels: " + channelCount);
     }
     
     public void hotswapSequence() {
@@ -685,111 +433,88 @@ public class RFMainWindow extends javax.swing.JFrame {
         }
     }
     
-    private void spinTrackStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinTrackStateChanged
-        updateTrackPanel();
-    }//GEN-LAST:event_spinTrackStateChanged
-
-    private void cbChannel15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel15ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel15ActionPerformed
-
-    private void cbChannel14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel14ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel14ActionPerformed
-
-    private void cbChannel13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel13ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel13ActionPerformed
-
-    private void cbChannel12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel12ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel12ActionPerformed
-
-    private void cbChannel11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel11ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel11ActionPerformed
-
-    private void cbChannel10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel10ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel10ActionPerformed
-
-    private void cbChannel9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel9ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel9ActionPerformed
-
-    private void cbChannel8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel8ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel8ActionPerformed
-
-    private void cbChannel7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel7ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel7ActionPerformed
-
-    private void cbChannel6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel6ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel6ActionPerformed
-
-    private void cbChannel5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel5ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel5ActionPerformed
-
-    private void cbChannel4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel4ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel4ActionPerformed
-
-    private void cbChannel3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel3ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel3ActionPerformed
-
-    private void cbChannel2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel2ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel2ActionPerformed
-
-    private void cbChannel1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel1ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel1ActionPerformed
-
-    private void cbChannel0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbChannel0ActionPerformed
-        hotswapSequence();
-    }//GEN-LAST:event_cbChannel0ActionPerformed
-
+    public boolean[][] playingChannelsOfTracksIncluded;
+    public boolean[][] showingChannelsOfTracksIncluded;
+    
     public Sequence compileSequence() {
         Sequence newSq = null;
                 
         if (this.sequence != null) {
             try {
+                //TODO This is inefficient.
                 newSq = MidiSystem.getSequence(chosenFile);
                 Track[] tracks = newSq.getTracks();
-                Track chosenTrack = tracks[((Integer)spinTrack.getValue()).intValue()];
-                for (Track t : tracks) {
-                    if (t != chosenTrack){
-                        newSq.deleteTrack(t);
+                int[] trackIndexConversion = new int[tracks.length];
+                for (int i = 0; i < trackIndexConversion.length; i++) {
+                    trackIndexConversion[i] = i;
+                }
+                
+                DefaultTableModel model = ((DefaultTableModel)tablePlayShow.getModel());
+                
+                HashSet<Integer> includedTracks = new HashSet<Integer>();
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    if (((Boolean)model.getValueAt(i, 0)) || ((Boolean)model.getValueAt(i, 1))) {
+                        includedTracks.add((Integer)model.getValueAt(i, 2));
                     }
                 }
-                ArrayList<MidiEvent> eventsToDelete = new ArrayList<MidiEvent>();
-                Track t = chosenTrack;
-                boolean[] chosenChannels = new boolean[16];
-                for (int i = 0; i < 16; i++) {
-                    chosenChannels[i] = getChannelCheckbox(i).isSelected();
-                }
-                //TODO This could maybe be done in one pass.
-                for (int i = 0; i < t.size(); i++) {
-                    MidiEvent event = t.get(i);
-                    MidiMessage message = event.getMessage();
-                    int status = message.getStatus();
-                    int type = (status & 0xF0) >> 4;
-                    int channel = status & 0xF;
-                    if (type == 0x9) {
-                        if (!chosenChannels[channel]) {
-                            eventsToDelete.add(event);
-                        } else if (message instanceof ShortMessage) {
-                            ShortMessage m = (ShortMessage)message;
-                            m.setMessage(m.getCommand(), m.getChannel(), m.getData1() + ((Integer)spinTranspose.getValue()).intValue(), m.getData2());
+                
+                for (int i = 0; i < tracks.length; i++) {
+                    Track t = tracks[i];
+                    if (!includedTracks.contains(i)){
+                        newSq.deleteTrack(t);
+                        for (int j = i; j < trackIndexConversion.length; j++) {
+                            trackIndexConversion[j]--;
                         }
                     }
                 }
-                for (MidiEvent event : eventsToDelete) {
-                    t.remove(event);
+                
+                tracks = newSq.getTracks();
+                
+                playingChannelsOfTracksIncluded = new boolean[tracks.length][16];
+                showingChannelsOfTracksIncluded = new boolean[tracks.length][16];
+                
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    boolean playing = (Boolean)model.getValueAt(i, 0);
+                    boolean showing = (Boolean)model.getValueAt(i, 1);
+                    int track = (Integer)model.getValueAt(i, 2);
+                    int channel = (Integer)model.getValueAt(i, 3);
+                    if (playing) {
+                        playingChannelsOfTracksIncluded[trackIndexConversion[track]][channel] = true;
+                    }
+                    if (showing) {
+                        showingChannelsOfTracksIncluded[trackIndexConversion[track]][channel] = true;
+                    }
+                }
+                
+                for (int i = 0; i < tracks.length; i++) {
+                    ArrayList<MidiEvent> eventsToDelete = new ArrayList<MidiEvent>();
+                    Track t = tracks[i];
+                    boolean[] includedChannels = new boolean[16];
+                    for (int j = 0; j < 16; j++) {
+                        includedChannels[j] = playingChannelsOfTracksIncluded[i][j] || showingChannelsOfTracksIncluded[i][j];
+                    }
+
+                    //TODO This could maybe be done in one pass.
+                    for (int j = 0; j < t.size(); j++) {
+                        MidiEvent event = t.get(j);
+                        MidiMessage message = event.getMessage();
+                        int status = message.getStatus();
+                        int type = (status & 0xF0) >> 4;
+                        int channel = status & 0xF;
+                        if (type == 0x9) {
+                            if (!includedChannels[channel]) {
+                                eventsToDelete.add(event);
+                            } else if (message instanceof ShortMessage) {
+                                ShortMessage m = (ShortMessage) message;
+                                int pitch = m.getData1() + ((Integer) spinTranspose.getValue()).intValue();
+                                int volume = playingChannelsOfTracksIncluded[i][channel] ? m.getData2() : 0;
+                                m.setMessage(m.getCommand(), m.getChannel(), pitch, volume);
+                            }
+                        }
+                    }
+                    for (MidiEvent event : eventsToDelete) {
+                        t.remove(event);
+                    }
                 }
             } catch (InvalidMidiDataException ex) {
                 Logger.getLogger(RFMainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -804,9 +529,14 @@ public class RFMainWindow extends javax.swing.JFrame {
     public MidiPlayer.MidiEventListener makeMidiEventListener() {
         return new MidiPlayer.MidiEventListener() {
             @Override
-            public void onEvent(MidiEvent event) {
-                if ((event.getMessage().getStatus() & 0xF0) == 0x90) {
-                    int pitch = (int)(event.getMessage().getMessage()[1] & 0xFF);
+            public void onEvent(int track, MidiEvent event) {
+                MidiMessage message = event.getMessage();
+                int status = message.getStatus();
+                int type = (status & 0xF0) >> 4;
+                int channel = status & 0xF;
+                if (type == 0x9 && showingChannelsOfTracksIncluded[track][channel]) {
+                    byte[] messageData = message.getMessage();
+                    int pitch = (int)(messageData[1] & 0xFF);
                     labelCurrentNote.setText(MidiConversions.pitches[pitch]);
                     imagePanel.setImage(midiConversions.getImage(pitch, cbFlipFingerings.isSelected()));
                 }
@@ -848,10 +578,6 @@ public class RFMainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnStopActionPerformed
 
-    private void spinTransposeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinTransposeStateChanged
-        hotswapSequence();
-    }//GEN-LAST:event_spinTransposeStateChanged
-
     private void jPanel6AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jPanel6AncestorAdded
         // TODO add your handling code here:
     }//GEN-LAST:event_jPanel6AncestorAdded
@@ -859,6 +585,10 @@ public class RFMainWindow extends javax.swing.JFrame {
     private void spinSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinSpeedStateChanged
         hotswapSequence();
     }//GEN-LAST:event_spinSpeedStateChanged
+
+    private void spinTransposeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinTransposeStateChanged
+        hotswapSequence();
+    }//GEN-LAST:event_spinTransposeStateChanged
 
     /**
      * @param args the command line arguments
@@ -897,24 +627,7 @@ public class RFMainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnPlayPause;
     private javax.swing.JButton btnStop;
-    private javax.swing.JCheckBox cbChannel0;
-    private javax.swing.JCheckBox cbChannel1;
-    private javax.swing.JCheckBox cbChannel10;
-    private javax.swing.JCheckBox cbChannel11;
-    private javax.swing.JCheckBox cbChannel12;
-    private javax.swing.JCheckBox cbChannel13;
-    private javax.swing.JCheckBox cbChannel14;
-    private javax.swing.JCheckBox cbChannel15;
-    private javax.swing.JCheckBox cbChannel2;
-    private javax.swing.JCheckBox cbChannel3;
-    private javax.swing.JCheckBox cbChannel4;
-    private javax.swing.JCheckBox cbChannel5;
-    private javax.swing.JCheckBox cbChannel6;
-    private javax.swing.JCheckBox cbChannel7;
-    private javax.swing.JCheckBox cbChannel8;
-    private javax.swing.JCheckBox cbChannel9;
     private javax.swing.JCheckBox cbFlipFingerings;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
@@ -925,19 +638,16 @@ public class RFMainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JLabel labelChannels;
     private javax.swing.JLabel labelCurrentNote;
     private javax.swing.JLabel labelFileName;
-    private javax.swing.JLabel labelSelectedTrack;
     private javax.swing.JLabel labelTracks;
     private javax.swing.JSpinner spinSpeed;
-    private javax.swing.JSpinner spinTrack;
     private javax.swing.JSpinner spinTranspose;
+    private javax.swing.JTable tablePlayShow;
     // End of variables declaration//GEN-END:variables
 }

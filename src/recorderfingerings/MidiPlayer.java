@@ -69,7 +69,11 @@ public class MidiPlayer {
         long pos = sequencer.getTickPosition();
         sequencer.setSequence(sequence);
         sequencer.setTickPosition(pos);
-        listener.currentIndex = MidiUtilities.findEventIndex(sequence.getTracks()[0], pos);
+        listener.tracks = sequence.getTracks();
+        listener.currentIndices = new int[listener.tracks.length];
+        for (int i = 0; i < listener.tracks.length; i++) {
+            listener.currentIndices[i] = MidiUtilities.findEventIndex(sequence.getTracks()[i], pos);
+        }
     }
 
     public void setTempoFactor(float factor) {
@@ -121,7 +125,12 @@ public class MidiPlayer {
      */
     public void setMidiEventListener(final MidiEventListener listener) {
         this.listener = listener;
-        listener.currentIndex = MidiUtilities.findEventIndex(sequence.getTracks()[0], sequencer.getTickPosition());
+        listener.tracks = sequence.getTracks();
+        listener.currentIndices = new int[listener.tracks.length];
+        long pos = sequencer.getTickPosition();
+        for (int i = 0; i < listener.tracks.length; i++) {
+            listener.currentIndices[i] = MidiUtilities.findEventIndex(sequence.getTracks()[i], pos);
+        }
     }
 
     public boolean released = false;
@@ -132,26 +141,38 @@ public class MidiPlayer {
             eventTimer.stop();
             return;
         }
-        Track t = sequence.getTracks()[0];
-        long tick = sequencer.getTickPosition();
+        
+        int delay = 50; // Max delay
+        
+        boolean finished = true;
+        for (int i = 0; i < listener.tracks.length; i++) {
+            Track t = listener.tracks[i];
 
-        if (listener.currentIndex >= t.size()) {
+            long tick = sequencer.getTickPosition();
+            
+            if (listener.currentIndices[i] >= t.size()) {
+                continue;
+            }
+            finished = false;
+
+            MidiEvent curEvent = t.get(listener.currentIndices[i]);
+            int count = 0;
+            //TODO This happens to be slightly inefficient
+            while (curEvent.getTick() <= tick) {
+                curEvent = t.get(listener.currentIndices[i]);
+                listener.onEvent(i, curEvent);
+                listener.currentIndices[i]++;
+                count++;
+            }
+            
+            delay = Math.min(delay, (int)(((curEvent.getTick() - tick) * microsPerTick()) / 1000));
+        }
+        if (finished) {
             eventTimer.stop();
             return;
         }
         
-        MidiEvent curEvent = t.get(listener.currentIndex);
-        int count = 0;
-        while (curEvent.getTick() <= tick) {
-            curEvent = t.get(listener.currentIndex);
-            listener.onEvent(curEvent);
-            listener.currentIndex++;
-            count++;
-        }
-        if (count > 1) {
-            //System.out.println("Lag " + (count - 1));
-        }
-        eventTimer.setDelay(Math.min((int)(((curEvent.getTick() - tick) * microsPerTick()) / 1000), 50));
+        eventTimer.setDelay(delay);
     }
     
     public long microsPerTick() {
@@ -164,7 +185,8 @@ public class MidiPlayer {
     }
     
     public static abstract class MidiEventListener {
-        public int currentIndex;
-        public abstract void onEvent(MidiEvent event);
+        public Track[] tracks;
+        public int[] currentIndices;
+        public abstract void onEvent(int track, MidiEvent event);
     }
 }
