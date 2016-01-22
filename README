@@ -1,0 +1,12 @@
+Plays a midi file and simultaneously shows you the corresponding fingerings for the recorder.  Could be adapted to other instruments.  Images and javascript (converted to java) courtesy of http://recorder-fingerings.com - they have quite a wealth of charts and data.
+
+Wrote this one night in the eight hours preceding one of my finals.  Finished it just in time for the test.  :P  See, I'd tried learning the recorder on my own, and it was like hitting a brick wall.  Look at the music, figure out which note I want, look at the chart, arrange my fingers, play the note.  Took like 30 seconds per note; that's not really a song.  Then I went home, and my dad taught me "Good King Wenceslas".  Watching his fingers and playing what he did was MARVELOUSLY easier!  So it occurred to me (a month later), why not make a program that does the same thing?  So I did.  And it works!  Helped me great deal, for the week or two I was practicing.
+
+By the way, a good midi to test it out with is at http://www.ffotaku.com/final-fantasy-ix/midi-music.php, the first one in the list - The Place I'll Return to Someday.  It has 4 nicely separated recorder parts (though you'll need to transpose the lower ones).
+
+
+This project depends on my MathNStuff library.
+
+I'm releasing this under the Apache License 2.0.
+
+-Erhannis
