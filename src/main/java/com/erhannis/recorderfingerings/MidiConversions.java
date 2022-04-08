@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package recorderfingerings;
+package com.erhannis.recorderfingerings;
 
 import java.awt.Color;
 import java.awt.Graphics;

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package recorderfingerings;
+package com.erhannis.recorderfingerings;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import mathnstuff.components.ImagePanel;
+import com.erhannis.mathnstuff.components.ImagePanel;
 
 /**
  *

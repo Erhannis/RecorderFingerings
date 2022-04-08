@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package recorderfingerings;
+package com.erhannis.recorderfingerings;
 
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.Track;
-import mathnstuff.MeUtils;
+import com.erhannis.mathnstuff.MeUtils;
 
 /**
  *
